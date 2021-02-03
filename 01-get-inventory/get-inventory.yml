@@ -6,6 +6,11 @@
 
   tasks:
 
+    - name: Create output directory (only if not present)
+      file:
+        path: "{{ file_path }}"
+        state: directory
+
     - name: Create inventory.csv file (if not present)
       file:
         path: "{{ file_path }}/inventory.csv"
