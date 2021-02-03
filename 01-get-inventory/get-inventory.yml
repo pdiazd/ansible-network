@@ -2,7 +2,7 @@
 ## Playbook to get device facts
 - hosts: localhost
   vars:
-    file_path: ~/ansible-network/outputs/get-facts
+    file_path: ~/ansible-network/outputs/get-inventory
 
   tasks:
 
@@ -22,7 +22,7 @@
   connection: local
   vars:
     desired_ios_version: "15.2(4)S8"
-    file_path: ~/ansible-network/outputs/get-facts
+    file_path: ~/ansible-network/outputs/get-inventory
 
   tasks:
 
