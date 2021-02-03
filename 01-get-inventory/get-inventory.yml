@@ -1,0 +1,49 @@
+---
+## Playbook to get device facts
+- hosts: localhost
+  vars:
+    file_path: ~/ansible-network/outputs/get-facts
+
+  tasks:
+
+    - name: Create inventory.csv file (if not present)
+      file:
+        path: "{{ file_path }}/inventory.csv"
+        state: touch
+
+    - name: Populate inventory.csv with headers
+      lineinfile:
+        dest: "{{ file_path }}/inventory.csv"
+        line: "hostname,device_model,device_os,os_version,serial_number"
+
+
+- name: Get Network Devices Information
+  hosts: network
+  connection: local
+  vars:
+    desired_ios_version: "15.2(4)S8"
+    file_path: ~/ansible-network/outputs/get-facts
+
+  tasks:
+
+    - name: Gathering Network Devices Information
+      register: facts_out
+      ios_facts:
+        gather_subset: "min"
+
+    - name: Display in CSV format
+      debug:
+        msg: "{{ ansible_net_hostname }},{{ ansible_net_model }},{{ ansible_net_system }},{{ ansible_net_version }},{{ ansible_net_serialnum }}"
+
+    - name: Create CSV report
+      delegate_to: localhost
+      lineinfile:
+        dest: "{{ file_path }}/inventory.csv"
+        line: "{{ ansible_net_hostname }},{{ ansible_net_model }},{{ ansible_net_system }},{{ ansible_net_version }},{{ ansible_net_serialnum }}"
+
+    - name: Create HTML report
+      template:
+        src: ios-html-report.j2
+        dest: "{{ file_path }}/inventory_report.html"
+      delegate_to: localhost
+      run_once: true

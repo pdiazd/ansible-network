@@ -1,0 +1,8 @@
+---
+ansible_network_os: ios
+ansible_connection: network_cli
+ansible_user: ansible
+ansible_password: ansible
+ansible_become: yes
+ansible_become_password: ansible
+ansible_become_method: enable

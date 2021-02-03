@@ -1,0 +1,31 @@
+# INI format
+[cisco]
+R04 ansible_host=192.168.1.104
+R05 ansible_host=192.168.1.105
+R06 ansible_host=192.168.1.106
+R07 ansible_host=192.168.1.107
+R09 ansible_host=192.168.1.109
+R10 ansible_host=192.168.1.110
+
+[cumulus]
+
+
+[juniper]
+
+
+[core]
+R04
+R06
+R09
+
+[edge]
+R05
+R07
+
+[route_reflectors]
+R10
+
+[network:children]
+core
+edge
+route_reflectors

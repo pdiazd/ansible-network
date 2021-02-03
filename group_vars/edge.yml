@@ -1,0 +1,44 @@
+---
+## Global connection settings
+ansible_network_os: ios
+ansible_connection: network_cli
+ansible_user: ansible
+ansible_password: ansible
+
+## Global protocol settings
+ospf_process: 10
+ospf_area: 0
+ospf_metric: 10
+
+## L3 configs for R04, 06 and 09
+core_l3_links:
+  R05:
+    - name: Loopback0
+      description: Router-ID
+      ipv4_add: 5.5.5.5
+      ipv4_subnet: 255.255.255.255
+      routing: ospf_passive
+    - name: FastEthernet1/0
+      description: TO_R04_Fa2/0
+      ipv4_add: 10.4.5.5
+      ipv4_subnet: 255.255.255.0
+      duplex: full
+      routing: ospf
+      ospf_metric: 100
+      peer: R04
+
+  R07:
+    - name: Loopback0
+      description: Router-ID
+      ipv4_add: 7.7.7.7
+      ipv4_subnet: 255.255.255.255
+      duplex: full
+      routing: ospf_passive
+    - name: FastEthernet1/0
+      description: TO_R09_Fa2/0
+      ipv4_add: 10.7.9.7
+      ipv4_subnet: 255.255.255.0
+      duplex: full
+      routing: ospf
+      ospf_metric: 100
+      peer: R09

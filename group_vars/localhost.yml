@@ -1,0 +1,5 @@
+---
+ansible_user: eve
+ansible_password: eve
+ansible_become: yes
+ansible_become_password: eve

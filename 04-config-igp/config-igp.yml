@@ -1,0 +1,37 @@
+---
+- name: Auto-configure OSPF for Network Devices
+  hosts: core,edge
+  tasks:
+    - name: Configure Interfaces
+      ios_config:
+        parents: interface {{ item.name }}
+        lines:
+          - description {{ item.description }}
+          - ip address {{ item.ipv4_add }} {{ item.ipv4_subnet }}
+        before:
+          - interface {{ item.name }}
+          - no shutdown
+      loop: "{{ core_l3_links[inventory_hostname] | list }}"
+
+    - name: Configure OSPF Interfaces
+      ios_config:
+        parents: interface {{ item.name }}
+        lines: 
+          - ip ospf {{ ospf_process }} area {{ ospf_area }}
+          - ip ospf network point-to-point
+          - ip ospf cost {{ item.ospf_metric | default(ospf_metric) }}
+      loop: "{{ core_l3_links[inventory_hostname] | selectattr('routing','equalto','ospf') | list }}"
+
+    - name: Configure OSPF Passive Interfaces
+      ios_config:
+        parents: interface {{ item.name }}
+        lines:
+          - ip ospf {{ ospf_process }} area {{ ospf_area }}
+        before:
+          - router ospf {{ ospf_process }}
+          - passive-interface {{ item.name }}
+      loop: "{{ core_l3_links[inventory_hostname] | selectattr('routing','equalto','ospf_passive') | list }}"
+
+    - name: Save running-config to startup config if modified
+      ios_config:
+        save_when: modified
