@@ -1,0 +1,21 @@
+---
+- name: "P1: Perform automated Python Filter (unit) testing"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: "P1T1: Find all of the 'tasks/test' cases"
+      find:
+        path: "{{ playbook_dir }}/tasks"
+        patterns: "test_*[.]yml"
+      register: test_cases
+
+    #Using the filter
+    - name: "P1T2: Assemble the 'path' field from each entry into a list"
+      set_fact:
+        test_paths: "{{ test_cases.files | map(attribute='path') | list }}"
+
+    #Loop to replace the with_* syntax
+    - name: "P1T3: Include all of the test cases"
+      include_tasks: "{{ item }}"
+      loop: "{{ test_paths }}"
+ 

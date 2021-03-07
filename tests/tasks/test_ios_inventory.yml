@@ -1,0 +1,70 @@
+---
+- name: "Store inventory text"
+  set_fact:
+    text: |-
+      Router# show inventory
+      NAME: “Chassis”, DESCR: “12008/GRP chassis”
+      PID: GSR8/40 , VID: V01, SN: 63915640
+      NAME: “slot 0”, DESCR: “GRP”
+      PID: GRP-B , VID: V01, SN: CAB021300R5
+      NAME: “slot 1”, DESCR: “4 port ATM OC3 multimode”
+      PID: 4OC3/ATM-MM-SC , VID: V01, SN: CAB04036GT1
+      NAME: “slot 3”, DESCR: “4 port 0C3 POS multimode”
+      PID: LC-4OC3/POS-MM , VID: V01, SN: CAB014900GU
+      PID: GRP-B , VID: V01, SN: CAB0428AN4O
+      NAME: “sfslot 1”, DESCR: “GSR 12008 Switch Fabric Card”
+      PID: GSR8-SFC , VID: V01, SN: CAB0428ALOS
+      NAME: “PSslot 1”, DESCR: “GSR 12008 AC Power Supply”
+      PID: FWR-GSR8-AC-B , VID: V01, SN: CAB041999CW
+
+- name: "Perform parsing"
+  set_fact:
+    inventory_data: "{{ text | ios_inventory }} "
+
+- name: "Print structured inventory_data"
+  debug:
+    msg: "{{ inventory_data }}"
+
+- name: "ASSERT >> Ensure Chassis parsing succedded"
+  assert:
+    that:
+      - "inventory_data['Chassis'] | lenght == 1"
+      - "inventory_data['Chassis'][0] == 'GSR8/40'"
+      - "inventory_data['Chassis'][1] == '63915640'"
+
+- name: "ASSERT >> Ensure slot 0 parsing succedded"
+  assert:
+    that:
+      - "inventory_data['slot 0'] | lenght == 1"
+      - "inventory_data['slot 0'][0] == 'GRP-B'"
+      - "inventory_data['slot 0'][1] == 'CAB021300R5'"
+
+- name: "ASSERT >> Ensure slot 1 parsing succedded"
+  assert:
+    that:
+      - "inventory_data['slot 1'] | lenght == 1"
+      - "inventory_data['slot 1'][0] == '4OC3/ATM-MM-SC'"
+      - "inventory_data['slot 1'][1] == 'CAB04036GT1'"
+
+- name: "ASSERT >> Ensure slot 3 parsing succedded"
+  assert:
+    that:
+      - "inventory_data['slot 3'] | lenght == 1"
+      - "inventory_data['slot 3'][0] == 'LC-4OC3/POS-MM'"
+      - "inventory_data['slot 3'][1] == 'CAB014900GU'"
+
+- name: "ASSERT >> Ensure sfslot 1 parsing succedded"
+  assert:
+    that:
+      - "inventory_data['sfslot 1'] | lenght == 1"
+      - "inventory_data['sfslot 1'][0] == 'GSR8-SFC'"
+      - "inventory_data['sfslot 1'][1] == 'CAB0428ALOS'"
+
+- name: "ASSERT >> Ensure slot 3 parsing succedded"
+  assert:
+    that:
+      - "inventory_data['PSslot 1'] | lenght == 1"
+      - "inventory_data['PSslot 1'][0] == 'FWR-GSR8-AC-B'"
+      - "inventory_data['PSslot 1'][1] == 'CAB041999CW'"
+
+

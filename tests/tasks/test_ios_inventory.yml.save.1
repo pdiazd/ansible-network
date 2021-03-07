@@ -1,0 +1,40 @@
+---
+- name: "Store IOS inventory text"
+  set_fact:
+    text: |-
+      NAME: “Chassis”, DESCR: “12008/GRP chassis”
+      PID: GSR8/40 , VID: V01, SN: 63915640
+      NAME: “slot 0”, DESCR: “GRP”
+      PID: GRP-B , VID: V01, SN: CAB021300R5
+      NAME: “slot 1”, DESCR: “4 port ATM OC3 multimode”
+      PID: 4OC3/ATM-MM-SC , VID: V01, SN: CAB04036GT1
+      NAME: “slot 3”, DESCR: “4 port 0C3 POS multimode”
+      PID: LC-4OC3/POS-MM , VID: V01, SN: CAB014900GU
+      NAME: “slot 5”, DESCR: “1 port Gigabit Ethernet”
+      PID: GE-GBIC-SC-B , VID: V01, SN: CAB034251NX
+      NAME: “slot 7”, DESCR: “GRP”
+      PID: GRP-B , VID: V01, SN: CAB0428AN4O
+      NAME: “slot 16”, DESCR: “GSR 12008 Clock Scheduler Card”
+      PID: GSR8-CSC/ALRM , VID: V01, SN: CAB0429AUYH
+      NAME: “sfslot 1”, DESCR: “GSR 12008 Switch Fabric Card”
+      PID: GSR8-SFC , VID: V01, SN: CAB0428ALOS
+      NAME: “sfslot 2”, DESCR: “GSR 12008 Switch Fabric Card”
+      PID: GSR8-SFC , VID: V01, SN: CAB0429AU0M
+      NAME: “sfslot 3”, DESCR: “GSR 12008 Switch Fabric Card”
+      PID: GSR8-SFC , VID: V01, SN: CAB0429ARD7
+      NAME: “PSslot 1”, DESCR: “GSR 12008 AC Power Supply”
+      PID: FWR-GSR8-AC-B , VID: V01, SN: CAB041999CW
+
+- name: "Perform Parsing"
+  set_fact:
+    inventory_data: "{{ text | ios_inventory_filter }}"
+
+- name: "print structured inventory_data"
+  debug:
+    msg: "{{ inventory_data }}"
+
+- name: "ASSERT >> Ensure Chassis data parsing succedded"
+  assert:
+    that:
+      - "inventory_data['Chassis']['PID'] | length == 1"
+      - "inventory_data['Chassis']['PID'][0] == 'GSR8/40'"      - "inventory_data['Chassis']['PID'][0] == 'GSR8/40'"
