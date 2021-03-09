@@ -1,0 +1,37 @@
+---
+- name: "NETCONF Testing"
+  hosts: DevNet-SandBox-CSR
+  connection: netconf
+  tasks:
+
+    - name: "Task 1: Get netconf config"
+      netconf_get:
+        source: running
+      register: nc_config
+
+#    - name: "Task 2: show NETCONF config"
+#      debug:
+#        msg: "{{ nc_config.stdout }}"
+
+    - name: "Task 2: Format XML for easy viewing"
+      xml:
+        xmlstring: "{{ nc_config.stdout }}"
+        pretty_print: true
+      register: pretty_config
+      changed_when: false
+
+#    - name: "Task 3: Display pretty XML config"
+#      debug:
+#        msg: "{{ pretty_config }}"
+
+    - name: "Task 3: Ensure outputs directory exists"
+      file:
+        path: "outputs/get-nc-config"
+        state: directory
+      run_once: true
+
+    - name: "Task 4: Write XML to disk"
+      copy:
+        content: "{{ pretty_config.xmlstring }}"
+        dest: "outputs/get-nc-config/{{ inventory_hostname }}_netconf.xml"
+

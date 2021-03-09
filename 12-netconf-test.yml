@@ -1,0 +1,19 @@
+- name: push config to IOS-XE using Netconf
+  hosts: all
+  gather_facts: no
+  vars:
+    ansible_connection: netconf
+    ansible_network_os: ios
+
+  tasks:
+  - name: SNMP config
+    netconf_config:
+      content: |
+        <config>
+          <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native" xmlns:ios-snmp="http://cisco.com/ns/yang/Cisco-IOS-XE-snmp" xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+             <snmp-server>
+               <ios-snmp:contact>test@test.test</ios-snmp:contact>
+               <ios-snmp:location>location</ios-snmp:location>
+             </snmp-server>
+           </native>
+         </config>

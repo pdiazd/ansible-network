@@ -1,0 +1,24 @@
+---
+- name: DYNAMIC INVENTORY REPORT
+  hosts: CSR
+  gather_facts: no
+  connection: network_cli
+
+  roles:
+    - ansible-network.network-engine
+
+  tasks:
+    - name: CAPTURE SHOW INVENTORY
+      ios_command:
+        commands:
+          - show inventory
+      register: output
+
+    - name: PARSE THE RAW INPUT
+      command_parser:
+        file: "~/ansible-network/parsers/ios_inventory.yml"
+        content: "{{ output.stdout[0] }}"
+      
+    - name: DISPLAY PARSED DATA
+      debug:
+        var: inventory_facts
