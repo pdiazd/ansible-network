@@ -3,7 +3,7 @@
   hosts: localhost
 
   vars:
-    file_path: ~/ansible-network/outputs/ios-hw-inventory
+    file_path: ~/ansible-network/outputs/ios-hw-inventory/full-reports
 
   tasks:
 
@@ -25,7 +25,7 @@
 
 
 - name: DYNAMIC INVENTORY REPORT
-  hosts: ios-xe
+  hosts: ios-xe,nx-os
   gather_facts: no
   connection: network_cli
 

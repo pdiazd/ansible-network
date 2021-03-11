@@ -19,11 +19,12 @@ for file in files:
             f = csv.writer(open(path+file.replace('.json', '.csv'), 'w', newline=''))
 
             # Write CSV Header, If you dont need that, remove this line
-            f.writerow(["name", "description", "pid", "serialnum"])
+            f.writerow(["hostname", "name", "description", "pid", "serialnum"])
 
             # Parsing for json data
             for data in data:
-                f.writerow([data["name"],
+                f.writerow([data["hostname"],
+                            data["name"],
                             data["description"],
                             data["pid"],
                             data["serialnum"]])
