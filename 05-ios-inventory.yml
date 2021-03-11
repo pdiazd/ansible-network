@@ -71,3 +71,6 @@
   tasks:
     - name: FORMAT JSON TO CSV with script_json_to_csv.py
       command: python3 script_json_to_csv.py
+
+    - name: CONSOLIDATE FULL ios-hw-inventory_report.csv WITH script_consolidate_csv.py
+      command: python3 script_consolidate_csv.py
