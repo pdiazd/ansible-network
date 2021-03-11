@@ -1,0 +1,73 @@
+---
+- name: CHECK PREREQS
+  hosts: localhost
+
+  vars:
+    file_path: ~/ansible-network/outputs/ios-hw-inventory
+
+  tasks:
+
+    - name: Create output directory (only if not present)
+      file:
+        path: "{{ file_path }}"
+        state: directory
+
+#    - name: Create hw-inventory_report.csv file (if not present)
+#      file:
+#        path: "{{ file_path }}/hw-inventory_report.csv"
+#        state: touch
+#      changed_when: False
+
+#    - name: Populate hw-inventory.csv with headers
+#      lineinfile:
+#        dest: "{{ file_path }}/hw-inventory_report.csv"
+#        line: "hostname,hw_name,description,pid,serial_number"
+
+
+- name: DYNAMIC INVENTORY REPORT
+  hosts: ios-xe
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    file_path: ~/ansible-network/outputs/ios-hw-inventory
+
+  roles:
+    - ansible-network.network-engine
+
+  tasks:
+    - name: GATHER FACTS
+      ios_facts:
+         gather_subset: "min"
+
+    - name: CAPTURE SHOW INVENTORY
+      ios_command:
+        commands:
+          - show inventory
+      register: output
+
+    - name: PARSE THE RAW INPUT
+      command_parser:
+        file: "~/ansible-network/parsers/ios_inventory.yml"
+        content: "{{ output.stdout[0] }}"
+      
+    - name: DISPLAY PARSED DATA
+      debug:
+        var: inventory_facts
+
+    - name: SAVE OUTPUT TO JSON FILE
+      delegate_to: localhost
+      run_once: false
+      copy:
+        content: "{{ inventory_facts }}"
+        dest: "{{ file_path }}/{{ inventory_hostname }}.json"
+
+- name: LAUNCH PYTHON SCRIPTS
+  hosts: localhost
+
+  vars:
+    file_path: ~/ansible-network/outputs/ios-hw-inventory
+
+  tasks:
+    - name: FORMAT JSON TO CSV with script_json_to_csv.py
+      command: python3 script_json_to_csv.py

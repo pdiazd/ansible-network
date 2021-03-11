@@ -13,8 +13,10 @@ R10 ansible_host=192.168.1.110
 [juniper]
 
 [iosxe-test]
-CSR ansible_host=192.168.1.120
 DevNet-SandBox-CSR ansible_host=ios-xe-mgmt.cisco.com
+
+[ios-xe]
+CSR ansible_host=192.168.1.120
 
 [core]
 R04

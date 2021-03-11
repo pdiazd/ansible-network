@@ -1,0 +1,3 @@
+{% for names in name %}
+{{hostvars['ansible_net_hostname']}},{{return_dict['name']}}
+{% endfor %}

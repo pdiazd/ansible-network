@@ -14,15 +14,16 @@
 - name: GENERATE JSON DATA STRUCTURE
   json_template:
     template:
-      - key: "{{ item.matches.0}}"
-        object:
-          - key: description
-            value: "{{ item.matches.1 }}"
-          - key: pid
-            value: "{{ item.matches.2 }}"
-          - key: serialnum
-            value: "{{ item.matches.3 }}"
+      - key: name
+        value: "{{ item.matches.0}}"
+      - key: description
+        value: "{{ item.matches.1 }}"
+      - key: pid
+        value: "{{ item.matches.2 }}"
+      - key: serialnum
+        value: "{{ item.matches.3 }}"
 
-  loop: "{{ section }}"
+  export as: dict
   export: yes
   register: inventory_facts
+  loop: "{{ section }}"
