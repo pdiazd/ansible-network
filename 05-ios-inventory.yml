@@ -25,7 +25,7 @@
 
 
 - name: DYNAMIC INVENTORY REPORT
-  hosts: ios-xe,nx-os
+  hosts: nx-os, ios-xe
   gather_facts: no
   connection: network_cli
 
@@ -45,6 +45,10 @@
         commands:
           - show inventory
       register: output
+
+    - name: DEBUG output VAR
+      debug:
+        var: output.stdout[0]
 
     - name: PARSE THE RAW INPUT
       command_parser:

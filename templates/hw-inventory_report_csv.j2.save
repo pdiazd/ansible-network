@@ -1,0 +1,3 @@
+{% for network_device in groups['CSR'] %}
+  {% for name in network_device %}
+    {{hostvars[network_device]['ansible_net_hostname']},
