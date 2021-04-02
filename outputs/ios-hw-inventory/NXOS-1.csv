@@ -1,6 +1,0 @@
-hostname,name,description,pid,serialnum
-NXOS-1,Chassis,Nexus9000 9000v Chassis,N9K-9000v,9LLOG330AHM
-NXOS-1,Slot 1,Nexus 9000v Ethernet Module,N9K-9000v,9LLOG330AHM
-NXOS-1,Fan 1,Nexus9000 9000v Chassis Fan Module,N9K-9000v-FAN,N
-NXOS-1,Fan 2,Nexus9000 9000v Chassis Fan Module,N9K-9000v-FAN,N
-NXOS-1,Fan 3,Nexus9000 9000v Chassis Fan Module,N9K-9000v-FAN,N

@@ -7,7 +7,6 @@
 
 - name: MATCH PATTERN
   pattern_match:
-#    regex: "NAME:\\s\\W+(.*?)\\W+\\,\\s\\DESCR:\\s\\W+(.*?)\\W+\\nPID:\\s(.*?)\\s+\\,\\s.*?,\\sSN:\\s(.*?)(\\n|$)"
     regex: "NAME:\\s\\W+(.*?)\\W+\\sDESCR:\\s\\W+(.*?)\\W+\\nPID:\\s(.*?)\\s+.*?SN:\\s(.+?)\\W"
     match_all: true
   register: section
@@ -18,7 +17,7 @@
       - key: hostname
         value: "{{ inventory_hostname }}"
       - key: name
-        value: "{{ item.matches.0}}"
+        value: "{{ item.matches.0 }}"
       - key: description
         value: "{{ item.matches.1 }}"
       - key: pid

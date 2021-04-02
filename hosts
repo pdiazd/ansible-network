@@ -8,15 +8,9 @@ R09 ansible_host=192.168.1.109
 R10 ansible_host=192.168.1.110
 
 [cumulus]
-
-
 [juniper]
 
-[iosxe-test]
-DevNet-SandBox-CSR ansible_host=ios-xe-mgmt.cisco.com
-
 [ios-xe]
-CSR ansible_host=192.168.1.120
 C881W-Lab ansible_host=192.168.1.125
 
 [nx-os]

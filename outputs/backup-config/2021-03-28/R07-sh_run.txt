@@ -1,0 +1,92 @@
+Building configuration...
+
+Current configuration : 936 bytes
+!
+! Last configuration change at 00:54:35 UTC Mon Mar 29 2021 by ansible
+!
+version 15.2
+no service timestamps debug uptime
+no service timestamps log uptime
+!
+hostname R07
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+ip domain name pragmatico.cl
+ip cef
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+username ansible privilege 15 secret 5 $1$6aDl$mzMP3NCO36oiFrLA8MLE.0
+!
+!
+!
+!
+!
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ no ip address
+!
+interface FastEthernet0/0
+ description ***MGMT*** DO NOT CHANGE
+ ip address 192.168.1.107 255.255.255.0
+ duplex full
+!
+interface FastEthernet1/0
+ no ip address
+ duplex full
+!
+interface FastEthernet2/0
+ no ip address
+ shutdown
+ duplex full
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+!
+!
+end

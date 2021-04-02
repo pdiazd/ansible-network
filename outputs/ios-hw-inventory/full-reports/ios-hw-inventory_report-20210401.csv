@@ -1,0 +1,3 @@
+﻿hostname,name,description,pid,serialnum
+C881W-Lab,C881W-A-K9,"C881W-A-K9 chassis, Hw Serial#: FTX174382DS, Hw Revision: 1.0",C881W-A-K9,FTX174382DS
+C881W-Lab,C881W Mother board on Slot 0,C881W Mother board,C881W-A-K9,FOC17365P3G

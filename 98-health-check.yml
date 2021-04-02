@@ -1,48 +1,73 @@
 ---
 ## Playbook to check Claro Colombia devices health
 
-  - name: Save Log Commands as text file
-    hosts: cisco
-    connection: local
-    gather_facts: false
-    tasks:
-    - name: Get EXEC commands output
-      register: ios_exec_output
+## First we have to check local folders
+- name: "Play 1: Check prerequisites for this playbook"
+  hosts: localhost
+
+  vars:
+    file_path: ~/ansible-network/outputs/health-check
+
+  tasks:
+
+    - name: "Task 1.1: Create output directory (if not present)"
+      file:
+        path: "{{ file_path }}"
+        state: directory
+
+## Now we start by obtaining command outputs to then parse
+- name: "Play 2: Get network devices information"
+  hosts: ios-xe
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    file_path: ~/ansible-network/outputs/health-check
+
+  roles:
+    - ansible-network.network-engine
+
+  tasks:
+    - name: "Task 2.1: Get device facts"
+      ios_facts:
+        gather_subset: "min"
+
+    - name: "Task 2.2: Capture interface data"
       ios_command:
         commands:
-          - sh int des | in TRUNK
-          - sh int | in err|line|rate
-          - sh log
+          - show interface | include error|line| rate 
+      register: output
 
-#    - name: log
+#    - name: DEBUG output VAR
 #      debug:
-#        msg: "{{ ios_exec_output }}"
+#        var: output.stdout[0]
 
-#    - name: Dump "sh int des | in TRUNK" output to text file
-#      delegate_to: localhost
-#      run_once: false
-#      copy:
-#        content: "{{ ios_exec_output.stdout[0] }}"
-#        dest: ~/Ansible/outputs/health-check/{{ inventory_hostname }}-sh_int_des.txt
+    - name: "Task 2.3: Parse the raw input"
+      command_parser:
+        file: "~/ansible-network/parsers/ios_health-check.yml"
+        content: "{{ output.stdout[0] }}"
+      
+    - name: "DISPLAY PARSED DATA"
+      debug:
+        var: interface_facts
 
-#    - name: Dump "sh int | "err|line|rate" output to text file
-#      delegate_to: localhost
-#      run_once: false
-#      copy:
-#        content: "{{ ios_exec_output.stdout[1] }}"
-#        dest: ~/Ansible/outputs/health-check/{{ inventory_hostname }}-sh_int.txt
-
-    - name: Dump "sh log" output to text file
+    - name: "Task 2.4: Save parsed data to JSON file"
       delegate_to: localhost
       run_once: false
       copy:
-        content: "{{ ios_exec_output.stdout[2] }}"
-        dest: ~/Ansible/outputs/health-check/{{ inventory_hostname }}-sh_log.txt
+        content: "{{ interface_facts }}"
+        dest: "{{ file_path }}/{{ inventory_hostname }}.json"
 
-  - name: Execute Python script
-    hosts: localhost
-    gather_facts: false
-    become: no
-    tasks:
-      - name: Exec py script
-        command: python3 ~/Ansible/script_logs_v3.py
+# Finally we create reports using the .json files
+- name: "Play 3: Create Reports"
+  hosts: localhost
+
+  vars:
+    file_path: ~/ansible-network/outputs/health-check
+
+  tasks:
+    - name: "Task 3.1: Create CSV from JSON file"
+      command: python3 scripts/ios_health-check_json_to_csv.py
+
+    - name: "Task 3.2: Consolidate all CSV data into one report"
+      command: python3 scripts/ios_health-check_consolidate_csv.py

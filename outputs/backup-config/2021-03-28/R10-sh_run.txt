@@ -1,0 +1,100 @@
+Building configuration...
+
+Current configuration : 1304 bytes
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname R10
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 1000000
+no logging console
+logging monitor notifications
+!
+no aaa new-model
+clock timezone CLST -3 0
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name pragmatico.cl
+ip cef
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+username ansible privilege 15 secret 5 $1$NQNs$xDeTLnjK2hSaENPwkN7l11
+!
+!
+!
+!
+!
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ description ***MGMT*** DO NOT CHANGE
+ ip address 192.168.1.110 255.255.255.0
+ duplex full
+!
+interface FastEthernet1/0
+ no ip address
+ shutdown
+ duplex full
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+logging trap notifications
+logging source-interface FastEthernet0/0
+logging host 192.168.0.250
+!
+snmp-server community pragmatico RO
+snmp-server location DC-LOCATION
+snmp-server contact pdiazd@gmail.com
+snmp-server host 192.168.0.250 pragmatico 
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+!
+ntp source FastEthernet0/0
+ntp update-calendar
+ntp server 192.168.0.250
+!
+end

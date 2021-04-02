@@ -1,0 +1,83 @@
+---
+- name: PARSER METADATA
+  parser_metadata:
+    version: 1.0
+    command: show interface | include error|line| rate
+    network_os: ios
+
+- name: "Match sections"
+
+- name: "Match for interface_name, admin_status and line_protocol"
+  pattern_match:
+    regex: "^(\\S+)\\s+.*?(up|down|administratively down).*?(up|down)" #this pattern works
+    match_all: true
+    match_greedy: true
+  register: section
+
+- name: "Match interface values"
+  pattern_group:
+    - name: "Match for interface_name, admin_status and line_protocol"
+      pattern_match:
+        regex: "^(\\S+)\\s+.*?(up|down|administratively down).*?(up|down)" #this pattern works
+        content: "{{ item }}"
+      register: name
+
+    - name: "Match for input_rate_bps and input_rate_pps"
+      pattern_match:
+        regex: "^.*?\\d+.*?input\\srate\\s(\\d+).*(\\d+)"
+        content: "{{ item }}"
+      register: input_rate
+
+    - name: "Match for output_rate_bps and output_rate_pps"
+      pattern_match:
+        regex: "^.*?\\d+.*?output\\srate\\s(\\d+).*(\\d+)"
+        content: "{{ item }}"
+      register: output_rate
+
+    - name: "Match for input_errors and crc"
+      pattern_match:        
+        regex: "^\\s+(\\d+)\\sinput.*?(\\d+)"
+        content: "{{ item }}"
+      register: input_errors
+
+    - name: "Match for output_errors and interface_resets"
+      pattern_match:        
+        regex: "^\\s+(\\d+)\\soutput.*(\\d+)\\sinterface\\sresets"
+        content: "{{ item }}"
+      register: output_errors
+
+  loop: "{{ section }}"
+  register: interfaces
+
+- name: GENERATE JSON DATA STRUCTURE
+  json_template:
+    template:
+      - key: hostname
+        value: "{{ inventory_hostname }}"
+      - key: interface_name
+        value: "{{ item.name.matches.0 }}"
+      - key: admin_status
+        value: "{{ item.name.matches.1 }}"
+      - key: line_protocol
+        value: "{{ item.name.matches.2 }}"
+      - key: input_rate_bps
+        value: "{{ item.input_rate.matches.0 }}"
+      - key: input_rate_pps
+        value: "{{ item.input_rate.matches.1 }}"
+      - key: output_rate_bps
+        value: "{{ item.output_rate.matches.0 }}"
+      - key: output_rate_pps
+        value: "{{ item.output_rate.matches.1 }}"
+      - key: input_errors
+        value: "{{ item.input_errors.matches.0 }}"
+      - key: crc
+        value: "{{ item.input_errors.matches.1 }}"
+      - key: output_errors
+        value: "{{ item.output_errors.matches.0 }}"
+      - key: interface_resets
+        value: "{{ item.output_errors.matches.1 }}"
+
+  export as: dict
+  export: yes
+  register: interface_facts
+  loop: "{{ interfaces }}"

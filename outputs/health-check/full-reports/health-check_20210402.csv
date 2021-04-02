@@ -1,0 +1,10 @@
+﻿hostname,interface,admin status,line protocol,input rate (bps),input rate (pps),output rate (bps),output rate (pps),input errors,CRC,output errors,interface resets
+C881W-Lab,FastEthernet0,administratively down,down,0,0,0,0,0,0,0,2
+C881W-Lab,FastEthernet1,up,down,0,0,0,0,0,0,0,2
+C881W-Lab,FastEthernet2,up,down,0,0,0,0,0,0,0,2
+C881W-Lab,FastEthernet3,up,down,0,0,0,0,0,0,0,2
+C881W-Lab,FastEthernet4,up,up,1000,1,1000,1,0,0,0,1
+C881W-Lab,NVI0,up,up,0,0,0,0,0,0,0,0
+C881W-Lab,Vlan1,up,up,0,0,0,0,0,0,0,1
+C881W-Lab,Wlan-GigabitEthernet0,up,up,0,0,0,0,0,0,0,2
+C881W-Lab,wlan-ap0,up,up,0,0,0,0,0,0,0,0
